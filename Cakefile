@@ -117,6 +117,12 @@ task 'build:browser', 'rebuild the merged script for inclusion in the browser', 
   console.log "built ... running browser tests:"
   invoke 'test:browser'
 
+task 'build:utilities', 'rebuild the utilities file for use with compile(utilities: false)', ->
+  code = 'var ' + (for utility, func of require('./lib/coffee-script/nodes.js').UTILITIES
+    "__#{utility} = #{func()}"
+  ).join(',\n') + ';'
+  fs.writeFileSync 'extras/utilities.js', code
+  console.log "built utilities.js"
 
 task 'doc:site', 'watch and continually rebuild the documentation for the website', ->
   exec 'rake doc', (err) ->

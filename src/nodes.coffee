@@ -244,7 +244,7 @@ exports.Block = class Block extends Base
   # clean up obvious double-parentheses.
   compileRoot: (o) ->
     o.indent = @tab = if o.bare then '' else TAB
-    o.scope  = new Scope null, this, null
+    o.scope  = new Scope null, this, null, o.utilities
     o.level  = LEVEL_TOP
     @spaced  = yes
     code     = @compileWithDeclarations o
@@ -1804,7 +1804,7 @@ unfoldSoak = (o, parent, name) ->
 # Constants
 # ---------
 
-UTILITIES =
+exports.UTILITIES = UTILITIES =
 
   # Correctly set up a prototype chain for inheritance, including a reference
   # to the superclass for `super()` calls, and copies of any static properties.
@@ -1866,7 +1866,7 @@ IS_STRING = /^['"]/
 # Helper for ensuring that utility functions are assigned at the top level.
 utility = (name) ->
   ref = "__#{name}"
-  Scope.root.assign ref, UTILITIES[name]()
+  Scope.root.assign ref, UTILITIES[name]() if Scope.root.utilities
   ref
 
 multident = (code, tab) ->

@@ -12,6 +12,10 @@ test "ensure that carriage returns don't break compilation on Windows", ->
 test "--bare", ->
   eq -1, CoffeeScript.compile('x = y', bare: on).indexOf 'function'
   ok 'passed' is CoffeeScript.eval '"passed"', bare: on, filename: 'test'
+  
+test "disabling helpers/utilities", ->
+  ok CoffeeScript.compile('x in arr', bare: on).indexOf '__indexOf =' >= 0
+  eq '\n__indexOf.call(arr, x) >= 0;\n', CoffeeScript.compile('x in arr', bare: true, utilities: false)
 
 test "multiple generated references", ->
   a = {b: []}
